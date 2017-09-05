@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+import argparse
 import lxml.etree as etree
+import re
 import requests
 import string
-import re
+
 
 # Could get command line
 default_repo_url = 'https://kubernetes-charts.storage.googleapis.com/'
@@ -11,14 +13,11 @@ default_repo_url = 'https://kubernetes-charts.storage.googleapis.com/'
 
 def update_latest_version(latest_version_dict, software, version):
     """
-    Could write as if not in dict or if version >...
+    Update the version in the dictionary to the latest version (or set it if it wasn't already present)
     """
-    # Check if already in dictionary
-    if software in latest_version_dict:
-        # Check if this a newer version
-        if version > latest_version_dict[software]:
-            latest_version_dict[software] = version
-    else:
+    # Add it if it's not in the dictionary. If it is in the dictionary, update
+    # if it's a newer version
+    if (software not in latest_version_dict) or (version > latest_version_dict[software]):
         latest_version_dict[software] = version
 
 
