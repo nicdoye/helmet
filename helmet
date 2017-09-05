@@ -6,9 +6,13 @@ import re
 import requests
 import string
 
+program_name = 'helmet'
+version = '0.1'
 
 # Could get command line
 default_repo_url = 'https://kubernetes-charts.storage.googleapis.com/'
+default_command_option = 'default'
+options = {}
 
 
 def update_latest_version(latest_version_dict, software, version):
@@ -78,10 +82,66 @@ def dump_dict(str_str_dict):
         print('{} {}'.format(key, str_str_dict[key]))
 
 
-def main():
-    tree = get_chart_xml_tree(get_charts(default_repo_url))
-    latest_version_dict = read_charts(tree)
+def do_list(latest_version_dict):
+    """
+    With all, do not filter versions
+    """
+    print('Argument "all" is ignored')
     dump_dict(latest_version_dict)
+
+
+def do_search(latest_version_dict):
+    """
+    Search for a particular chart
+    """
+    if options['chart'] in latest_version_dict:
+        print('{} {}'.format(options['chart'],
+                             latest_version_dict[options['chart']]))
+
+
+def command_line_args():
+    """
+    Deal with command line arguments
+    I've done this very badly.
+
+    CHANGE TO USE --all
+    """
+    parser = argparse.ArgumentParser(
+        prog=program_name, description='Search through helm repos')
+    parser.add_argument('--repo', default=default_repo_url,
+                        help='--repo <helm-repo>')
+    #    parser.add_argument('--all', default=False, help='Some help')
+    parser.add_argument('command', default='list', help='One of: list; search')
+    parser.add_argument('value', default=default_command_option,
+                        help='List argument or search argument')
+
+    args = parser.parse_args()
+    print('DEBUG {} {} {}'.format(args.command, args.value, args.repo))
+    if args.command == 'search':
+        options['search'] = True
+        options['chart'] = args.value
+    elif args.command == 'list':
+        options['list'] = True
+        if args.value == 'all':
+            options['all'] = True
+    options['repo'] = args.repo
+
+
+def choose_output(latest_version_dict):
+    """
+    Rubbish function dispatch. As in "not function dispatch".
+    """
+    if 'search' in options:
+        do_search(latest_version_dict)
+    elif 'list' in options:
+        do_list(latest_version_dict)
+
+
+def main():
+    command_line_args()
+    tree = get_chart_xml_tree(get_charts(options['repo']))
+    latest_version_dict = read_charts(tree)
+    choose_output(latest_version_dict)
 
 if __name__ == "__main__":
     # execute only if run as a script
