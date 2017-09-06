@@ -1,4 +1,4 @@
-# Helmed
+# Helmet
 
 A simple command line for Kubernetes Helm repos
 
