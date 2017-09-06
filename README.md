@@ -7,10 +7,10 @@ A simple command line for Kubernetes Helm repos
 When finished:
 
 ```bash
-helm list
-helm list --all-versions
-helm search <chartname>
-helm search <chartname> --all-versions
+helmet list
+helmet list --all-versions
+helmet search <chartname>
+helmet search <chartname> --all-versions
 ```
 
 As above but with
