@@ -2,12 +2,11 @@
 
 A simple command line for Kubernetes Helm repos
 
-
 ## Usage
 
 When finished:
 
-```
+```bash
 helm list
 helm list --all-versions
 helm search <chartname>
@@ -16,7 +15,7 @@ helm search <chartname> --all-versions
 
 As above but with
 
-```
+```bash
 --repo <my-super-secret-helm-repo>
 ```
 
